@@ -7,6 +7,7 @@ use Pagekit\Application\ServiceProviderInterface;
 use Pagekit\Application\Provider\RoutingServiceProvider;
 use Pagekit\Application\Traits\EventTrait;
 use Pagekit\Application\Traits\StaticTrait;
+use Pagekit\Decorator\DecoratorServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +41,7 @@ class Application extends Container implements HttpKernelInterface, TerminableIn
         };
 
         $this->register(new RoutingServiceProvider);
+        $this->register(new DecoratorServiceProvider($this['loader']));
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace Pagekit\Routing\Controller;
 
+
 use Pagekit\Routing\Event\GetControllerEvent;
+use Pagekit\Decorator\Event\DecorateEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +32,12 @@ class ControllerResolver extends BaseResolver
      */
     public function getController(Request $request)
     {
-        return $this->events->dispatch('controller.resolve', new GetControllerEvent($request))->getController() ?: parent::getController($request);
+        $controller = $this->events->dispatch('controller.resolve', new GetControllerEvent($request))->getController() ?: parent::getController($request);
+        if ($controller && is_array($controller) && is_object($controller[0])){
+            $this->events->dispatch('decorators.decorate', $event = new DecorateEvent($controller[0]));
+            $controller[0] = $event->getDecoratedObject();
+        }
+        return $controller;
+
     }
 }

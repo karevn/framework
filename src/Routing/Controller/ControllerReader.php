@@ -83,15 +83,16 @@ class ControllerReader implements ControllerReaderInterface
 
             if ($method->isPublic() && 'Action' == substr($method->name, -6)) {
 
-                $count = $this->routes->count();
+                $routeAdded = false;
 
                 foreach ($this->getAnnotationReader()->getMethodAnnotations($method) as $annotation) {
                     if ($annotation instanceof $this->routeAnnotation) {
                         $this->addRoute($class, $method, $globals, $annotation);
+                        $routeAdded = true;
                     }
                 }
 
-                if ($count == $this->routes->count()) {
+                if (!$routeAdded) {
                     $this->addRoute($class, $method, $globals, new $this->routeAnnotation([]));
                 }
             }
