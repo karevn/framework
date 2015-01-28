@@ -102,6 +102,10 @@ class Cache implements CacheInterface
             $supports[] = 'xcache';
         }
 
+        if (extension_loaded('memcache') && class_exists('Memcache')){
+            $supports[]= 'memcache';
+        }
+
         return $name? in_array($name, $supports) : $supports;
     }
 }

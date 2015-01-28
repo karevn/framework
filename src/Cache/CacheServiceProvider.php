@@ -5,6 +5,7 @@ namespace Pagekit\Cache;
 use Doctrine\Common\Cache\ApcCache;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\XcacheCache;
+use Doctrine\Common\Cache\MemcacheCache;
 use Pagekit\Application;
 use Pagekit\Application\ServiceProviderInterface;
 
@@ -34,9 +35,16 @@ class CacheServiceProvider implements ServiceProviderInterface
                     case 'apc':
                         $storage = new ApcCache;
                         break;
-                        
+
                     case 'xcache':
                         $storage = new XcacheCache;
+                        break;
+
+                    case 'memcache':
+                        $storage = new MemcacheCache();
+                        $memcache = new \Memcache();
+                        $memcache->pconnect('127.0.0.1');
+                        $storage->setMemcache($memcache);
                         break;
 
                     case 'file':
